@@ -11,6 +11,10 @@ app.set('views', './app/views');
 // Add static files location
 app.use(express.static("static"));
 
+// About us Route
+app.get('/about-us', (req, res) => {
+    res.render('about-us'); 
+});
 // Get the functions in the db.js file to use
 const db = require('./services/db');
 
