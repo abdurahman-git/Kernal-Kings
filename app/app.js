@@ -51,6 +51,10 @@ app.get("/reviews", function(req, res) {
     res.render("reviews");
 });
 
+//rides page
+app.get("/rides", function(req, res) {
+    res.render("rides");
+});
 
 
 // Create a route for testing the db
