@@ -18,10 +18,36 @@ const db = require('./services/db');
 app.get("/", function(req, res) {
     res.send("Hello world!");
 });
-
+//about page
 app.get("/about", function(req, res) {
     res.render("about");
 });
+//user list page
+app.get("/userlist", function(req, res) {
+    res.render("userlist");
+});
+
+//user profile page
+app.get("/userprofile", function(req, res) {
+    res.render("userprofile");
+});
+
+//listing page
+app.get("/listing", function(req, res) {
+    res.render("listing");
+});
+
+//detail page
+app.get("/detail", function(req, res) {
+    res.render("detail");
+});
+
+//reviews page
+app.get("/reviews", function(req, res) {
+    res.render("reviews");
+});
+
+
 
 // Create a route for testing the db
 app.get("/db_test", function(req, res) {
