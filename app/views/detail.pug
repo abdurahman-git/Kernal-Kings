@@ -1,10 +1,41 @@
-html 
-    head    
-        title Details
-    body
-       h1 Driver 
-       p Driver details: 
-       P Usain Bolt
-       p Toyota Yaris LK72 2UT
+doctype html
+html
+  head    
+    title Ride Details
+    link(rel="stylesheet" href="styles.css")
+  body
+    h1 Ride Details                             
 
-         
+    h2 Driver Information
+    table
+      thead
+        tr
+          th Attribute
+          th Information
+      tbody
+        tr
+          td Name
+          td Usain Bolt
+        tr
+          td Vehicle
+          td Toyota Yaris
+        tr
+          td License Plate
+          td LK72 2UT
+
+    h2 Rider Information
+    table
+      thead
+        tr
+          th Attribute
+          th Information
+      tbody
+        tr
+          td Name
+          td Mo Farah
+        tr
+          td Pickup Location
+          td 65 Maygrove Road, NW6 2DA
+        tr
+          td Destination
+          td Roehampton University
