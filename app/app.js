@@ -27,9 +27,19 @@ app.get("/about", function(req, res) {
     res.render("about");
 });
 //user list page
-app.get("/userlist", function(req, res) {
-    res.render("userlist");
+// User list page (pulling from database)
+app.get("/userlist", async function(req, res) {
+    try {
+        const sql = "SELECT * FROM user";
+        const users = await db.query(sql);
+        console.log(users); // Debugging to see the result
+        res.render("userlist", { users: users });
+    } catch (error) {
+        console.error("Error fetching users:", error);
+        res.status(500).send("Database error.");
+    }
 });
+
 
 //user profile page
 app.get("/userprofile", function(req, res) {
@@ -46,15 +56,11 @@ app.get("/detail", function(req, res) {
     res.render("detail");
 });
 
-//reviews page
+//route to reviews page
 app.get("/reviews", function(req, res) {
     res.render("reviews");
 });
 
-//rides page
-app.get("/rides", function(req, res) {
-    res.render("rides");
-});
 
 
 // Create a route for testing the db
@@ -88,3 +94,4 @@ app.get("/hello/:name", function(req, res) {
 app.listen(3000,function(){
     console.log(`Server running at http://127.0.0.1:3000/`);
 });
+

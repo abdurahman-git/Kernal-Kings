@@ -2,7 +2,7 @@ doctype html
 html
   head    
     title User List
-    link(rel="stylesheet" href="styles.css")
+    link(rel="stylesheet" href="/styles.css")
   body
     h1 User Details                             
 
@@ -14,23 +14,9 @@ html
           th Email
           th Ratings
       tbody
-        tr
-          td Mohamed
-          td Farah
-          td mofarah@gmail.com
-          td ⭐⭐⭐⭐
-        tr
-          td Martin
-          td Ødegaard
-          td ode@gmail.com
-          td ⭐⭐⭐⭐
-        tr
-          td Declan
-          td Rice
-          td ric@gmail.com
-          td ⭐⭐⭐
-        tr
-          td Kai
-          td Havertz
-          td hav@gmail.com
-          td ⭐⭐⭐⭐⭐
+        each user in users
+          tr
+            td= user.firstname
+            td= user.lastname
+            td= user.email
+            td #{'⭐'.repeat(user.rating)}
