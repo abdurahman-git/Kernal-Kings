@@ -1,0 +1,27 @@
+doctype html
+html
+  head
+    title Tag Listings
+    link(rel="stylesheet", href="/styles.css")
+  body
+    h1 Available Tags
+
+    // Check if tags exist
+    if tags && tags.length > 0
+      each tag in tags
+        .tag-listing
+          h2 Tag Information
+          table
+            thead
+              tr
+                th Tag Name
+                th Description
+            tbody
+              tr
+                td= tag.name
+                td= tag.description
+    else
+      p No tags available.
+
+    footer
+      p © 2025 RideShare Platform. All rights reserved.
