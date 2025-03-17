@@ -1,5 +1,6 @@
 doctype html
 html
+<<<<<<< HEAD
   head    
     title User List
     link(rel="stylesheet" href="/styles.css")
@@ -20,3 +21,25 @@ html
             td= user.lastname
             td= user.email
             td #{'⭐'.repeat(user.rating)}
+=======
+head
+title User List
+link(rel="stylesheet" href="/styles.css")
+body
+h1 User Details
+
+table
+thead
+tr
+th First Name
+th Surname
+th Email
+th Ratings
+tbody
+each user in users
+tr
+td= user.firstname
+td= user.lastname
+td= user.email
+td #{'⭐'.repeat(user.rating)}
+>>>>>>> 25a5dee493e5370dafe5a4ac4083279c09f729f8
