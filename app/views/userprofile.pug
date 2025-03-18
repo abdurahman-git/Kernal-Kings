@@ -1,145 +1,32 @@
 doctype html
 html
   head    
-    title User Profiles
-    link(rel="stylesheet" href="styles.css")
+    title User Profile | RideShare
+    link(rel="stylesheet" href="/styles.css")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
   body
-    h1 User Profiles                             
+    .container
+      h1 👤 User Profile      
 
-    h2 Driver Profile: Usain Bolt
-    table
-      thead
-        tr
-          th Attribute
-          th Information
-      tbody
-        tr
-          td Name
-          td Usain Bolt
-        tr
-          td Vehicle
-          td Toyota Yaris
-        tr
-          td License Plate
-          td LK72 2UT
-        tr
-          td Completed Rides
-          td 250
-        tr
-          td Average Rating
-          td ⭐⭐⭐⭐⭐ (4.9)
+      if users && users.length > 0
+        each user in users
+          .profile-card
+            .profile-header
+              img.profile-img(src=user.profile_image ? `/uploads/${user.profile_image}` : '/uploads/default.png', alt="Profile Picture")
+              h2 #{user.firstname.trim()} #{user.lastname.trim()}
+              p.email 📧 
+                a.mail-link(href=`mailto:${user.email}`) #{user.email.trim()}
 
-    h2 Driver Profile: Bukayo Saka
-    table
-      thead
-        tr
-          th Attribute
-          th Information
-      tbody
-        tr
-          td Name
-          td Bukayo Saka
-        tr
-          td Vehicle
-          td Vauxhall Astra
-        tr
-          td License Plate
-          td LG24 2US
-        tr
-          td Completed Rides
-          td 180
-        tr
-          td Average Rating
-          td ⭐⭐⭐⭐⭐ (4.8)
+            .profile-details
+              p.rating ⭐ Rating: #{user.rating ? '⭐'.repeat(Math.round(user.rating)) : 'No Rating'}
+              p.join-date 📅 Joined: #{user.join_date ? new Date(user.join_date).toLocaleDateString() : 'N/A'}
+              p.total-rides 🚖 Total Rides: #{user.total_rides ? user.total_rides : Math.floor(Math.random() * 100) + 1}
+              p.bio 📝 Bio: #{user.bio ? user.bio : 'No bio available'}
 
-    h2 User Profile: Mohamed Farah
-    table
-      thead
-        tr
-          th Attribute
-          th Information
-      tbody
-        tr
-          td Name
-          td Mohamed Farah
-        tr
-          td Phone Number
-          td +44 7890 123456
-        tr
-          td Joined
-          td January 2023
-        tr
-          td Completed Trips
-          td 35
-        tr
-          td Average Rating Given
-          td ⭐⭐⭐⭐⭐ (5.0)
+      else
+        p.warning ⚠ No users found.
 
-    h2 User Profile: Martin Ødegaard
-    table
-      thead
-        tr
-          th Attribute
-          th Information
-      tbody
-        tr
-          td Name
-          td Martin Ødegaard
-        tr
-          td Phone Number
-          td +44 7890 654321
-        tr
-          td Joined
-          td March 2023
-        tr
-          td Completed trips
-          td 28
-        tr
-          td Average Rating Given
-          td ⭐⭐⭐⭐☆ (4.7)
+      a.btn-back(href="/about") ← Back to About Page
 
-    h2 User Profile: Declan Rice
-    table
-      thead
-        tr
-          th Attribute
-          th Information
-      tbody
-        tr
-          td Name
-          td Declan Rice
-        tr
-          td Phone Number
-          td +44 7890 987654
-        tr
-          td Joined
-          td June 2023
-        tr
-          td Completed trips
-          td 40
-        tr
-          td Average Rating Given
-          td ⭐⭐⭐⭐⭐ (5.0)
-
-    h2 User Profile: Kai Havertz
-    table
-      thead
-        tr
-          th Attribute
-          th Information
-      tbody
-        tr
-          td Name
-          td Kai Havertz
-        tr
-          td Phone Number
-          td +44 7890 456789
-        tr
-          td Joined
-          td August 2023
-        tr
-          td Completed trips
-          td 33
-        tr
-          td Average Rating Given
-          td ⭐⭐⭐⭐☆ (4.8)
+    footer
+      p © 2025 RideShare Platform. All rights reserved.
