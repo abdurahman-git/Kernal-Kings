@@ -1,87 +1,34 @@
 doctype html
 html
-  head    
-    title Ride Reviews
-    link(rel="stylesheet" href="styles.css")
+  head
+    title Reviews
+    link(rel="stylesheet", href="/styles.css")
   body
-    h1 Ride Reviews                             
+    h1 User Reviews
 
-    h2 Reviews for Driver: Bukayo Saka
-    table
-      thead
-        tr
-          th User
-          th Date
-          th Vehicle
-          th License Plate
-          th Rating
-          th Comments
-      tbody
-        tr
-          td Mohamed Farah
-          td 12th March 2025
-          td Vauxhall Astra
-          td LG24 2US
-          td ⭐⭐⭐⭐⭐
-          td "Excellent ride! Very smooth and professional."
-        tr
-          td Martin Ødegaard
-          td 10th March 2025
-          td Vauxhall Astra
-          td LG24 2US
-          td ⭐⭐⭐⭐☆
-          td "Comfortable ride, but slight delay due to traffic."
-        tr
-          td Declan Rice
-          td 7th March 2025
-          td Vauxhall Astra
-          td LG24 2US
-          td ⭐⭐⭐⭐⭐
-          td "Great experience! Would book again."
-        tr
-          td Kai Havertz
-          td 5th March 2025
-          td Vauxhall Astra
-          td LG24 2US
-          td ⭐⭐⭐⭐⭐
-          td "The best ride ever! Arrived ahead of schedule."
+    // Check if reviews exist
+    if reviews && reviews.length > 0
+      table
+        thead
+          tr
+            th Review ID
+            th User Name
+            th Rating
+            th Comment
+        tbody
+          each review in reviews
+            tr
+              // Display review ID
+              td= review.review_id
+              // Display the user's name
+              td= review.name
+              // Display rating as stars
+              td= '⭐'.repeat(Math.round(review.rating))
+              // Display review comment text
+              td= review.COMMENT
+    else
+      p No reviews available.
 
-    h2 Reviews for Driver: Usain Bolt
-    table
-      thead
-        tr
-          th User
-          th Date
-          th Vehicle
-          th License Plate
-          th Rating
-          th Comments
-      tbody
-        tr
-          td Mohamed Farah
-          td 11th March 2025
-          td Toyota Yaris
-          td LK72 2UT
-          td ⭐⭐⭐⭐⭐
-          td "Fastest ride ever! Reached my destination in record time."
-        tr
-          td Martin Ødegaard
-          td 9th March 2025
-          td Toyota Yaris
-          td LK72 2UT
-          td ⭐⭐⭐⭐☆
-          td "Very good service, just a little bumpy at times."
-        tr
-          td Declan Rice
-          td 6th March 2025
-          td Toyota Yaris
-          td LK72 2UT
-          td ⭐⭐⭐⭐⭐
-          td "Amazing ride, highly recommend!"
-        tr
-          td Kai Havertz
-          td 4th March 2025
-          td Toyota Yaris
-          td LK72 2UT
-          td ⭐⭐⭐⭐☆
-          td "Very good ride, but needed better AC."
+    a.btn-back(href="/about") ← Back to About Page    
+    footer
+      p © 2025 RideShare Platform. All rights reserved.
