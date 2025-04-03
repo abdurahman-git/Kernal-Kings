@@ -54,25 +54,31 @@ INSERT INTO `reviews` (`review_id`, `ride_id`, `user_id`, `rating`, `COMMENT`) V
 --
 
 CREATE TABLE `rides` (
-  `ride_id` int NOT NULL,
+  `ride_id` int NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
+  `driver_id` int DEFAULT NULL,
   `pickup_location` varchar(255) NOT NULL,
   `dropoff_location` varchar(255) NOT NULL,
   `cost` decimal(10,2) NOT NULL,
-  `status` varchar(255) NOT NULL
+  `status` varchar(255) NOT NULL,
+  PRIMARY KEY (`ride_id`),
+  KEY `user_id` (`user_id`),
+  KEY `driver_id` (`driver_id`),
+  CONSTRAINT `rides_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`),
+  CONSTRAINT `rides_ibfk_2` FOREIGN KEY (`driver_id`) REFERENCES `user` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `rides`
 --
 
-INSERT INTO `rides` (`ride_id`, `user_id`, `pickup_location`, `dropoff_location`, `cost`, `status`) VALUES
-(1, 1, 'hyde park', 'ROEHAMPTON UNIVERISTY', 12.50, 'Completed'),
-(2, 3, 'emirates stadium', 'ROEHAMPTON UNIVERISTY', 32.00, 'pending '),
-(3, 4, 'westfield bush', 'ROEHAMPTON UNIVERSITY', 13.22, 'completed '),
-(4, 5, 'G-tech stadium', 'ROEHAMPTON UNIVERSITY', 18.50, 'cancelled'),
-(5, 2, '65 MAYGROVE ROAD', 'ROEHAMPTON UNIVERSITY', 7.70, 'ongoing '),
-(6, 6, 'CLAPHAM JUNCTION ', 'ROEHAMPTON UNIVERSITY', 34.25, 'ONGOING');
+INSERT INTO `rides` (`ride_id`, `user_id`, `driver_id`, `pickup_location`, `dropoff_location`, `cost`, `status`) VALUES
+(1, 1, NULL, 'hyde park', 'ROEHAMPTON UNIVERISTY', 12.50, 'Completed'),
+(2, 3, NULL, 'emirates stadium', 'ROEHAMPTON UNIVERISTY', 32.00, 'pending '),
+(3, 4, NULL, 'westfield bush', 'ROEHAMPTON UNIVERSITY', 13.22, 'completed '),
+(4, 5, NULL, 'G-tech stadium', 'ROEHAMPTON UNIVERSITY', 18.50, 'cancelled'),
+(5, 2, NULL, '65 MAYGROVE ROAD', 'ROEHAMPTON UNIVERSITY', 7.70, 'ongoing '),
+(6, 6, NULL, 'CLAPHAM JUNCTION ', 'ROEHAMPTON UNIVERSITY', 34.25, 'ONGOING');
 
 -- --------------------------------------------------------
 
@@ -94,12 +100,12 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`user_id`, `firstname`, `lastname`, `email`, `password`, `rating`) VALUES
-(1, 'Bukayo\r\n', 'Saka\r\n', 'sak@gmail.com\r\n', 'password1\r\n', 3),
-(2, 'MOHAMED', 'FARAH', 'jes@gmail.com', 'password2', 5),
-(3, 'USAIN', 'BOLT', 'wil@gmail.com', 'password3', 4),
-(4, 'martin', 'odegaard', 'ode@gmail.com', 'password4', 5),
-(5, 'declan', 'rice', 'ric@gmail.com', 'password5', 4),
-(6, 'kai', 'havertz', 'hav@gmail.com', 'password7', 2);
+(1, 'Bukayo', 'Saka', 'sak@gmail.com', '$2a$10$7QJ8eQ9z5rF7z8x5V1Q5cuU8F5uOeW5yF1Q5cuU8F5uOeW5yF1Q5cu', 3),
+(2, 'MOHAMED', 'FARAH', 'jes@gmail.com', '$2a$10$7QJ8eQ9z5rF7z8x5V1Q5cuU8F5uOeW5yF1Q5cuU8F5uOeW5yF1Q5cu', 5),
+(3, 'USAIN', 'BOLT', 'wil@gmail.com', '$2a$10$7QJ8eQ9z5rF7z8x5V1Q5cuU8F5uOeW5yF1Q5cuU8F5uOeW5yF1Q5cu', 4),
+(4, 'martin', 'odegaard', 'ode@gmail.com', '$2a$10$7QJ8eQ9z5rF7z8x5V1Q5cuU8F5uOeW5yF1Q5cuU8F5uOeW5yF1Q5cu', 5),
+(5, 'declan', 'rice', 'ric@gmail.com', '$2a$10$7QJ8eQ9z5rF7z8x5V1Q5cuU8F5uOeW5yF1Q5cuU8F5uOeW5yF1Q5cu', 4),
+(6, 'kai', 'havertz', 'hav@gmail.com', '$2a$10$7QJ8eQ9z5rF7z8x5V1Q5cuU8F5uOeW5yF1Q5cuU8F5uOeW5yF1Q5cu', 2);
 
 --
 -- Indexes for dumped tables
@@ -115,7 +121,9 @@ ALTER TABLE `reviews`
 -- Indexes for table `rides`
 --
 ALTER TABLE `rides`
-  ADD PRIMARY KEY (`ride_id`);
+  ADD PRIMARY KEY (`ride_id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `driver_id` (`driver_id`);
 
 --
 -- Indexes for table `user`

@@ -1,0 +1,15 @@
+extends layout
+
+block content
+  h1 Add a Review
+  form(action="/review" method="POST")
+    label(for="ride_id") Ride ID:
+    input(type="number", name="ride_id", required)
+    br
+    label(for="rating") Rating (e.g., 4.5):
+    input(type="number", name="rating", step="0.1", required)
+    br
+    label(for="comment") Comment:
+    textarea(name="comment", required)
+    br
+    input(type="submit" value="Submit Review")

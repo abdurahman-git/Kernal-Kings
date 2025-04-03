@@ -1,34 +1,16 @@
-doctype html
-html
-  head
-    title Reviews
-    link(rel="stylesheet", href="/styles.css")
-  body
-    h1 User Reviews
+extends layout
 
-    // Check if reviews exist
-    if reviews && reviews.length > 0
-      table
-        thead
-          tr
-            th Review ID
-            th User Name
-            th Rating
-            th Comment
-        tbody
-          each review in reviews
-            tr
-              // Display review ID
-              td= review.review_id
-              // Display the user's name
-              td= review.name
-              // Display rating as stars
-              td= '⭐'.repeat(Math.round(review.rating))
-              // Display review comment text
-              td= review.COMMENT
-    else
-      p No reviews available.
-
-    a.btn-back(href="/about") ← Back to About Page    
-    footer
-      p © 2025 RideShare Platform. All rights reserved.
+block content
+  h1 Reviews
+  if reviews && reviews.length
+    each review in reviews
+      .review
+        p Review ID: #{review.review_id}
+        p Ride ID: #{review.ride_id}
+        p User ID: #{review.user_id}
+        p Rating: #{review.rating}
+        p Comment: #{review.COMMENT}
+        hr
+  else
+    p No reviews available.
+  p <a href="/review/new">Add a Review</a>

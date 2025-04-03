@@ -1,31 +1,61 @@
-require("dotenv").config();
-
+require('dotenv').config();
 const mysql = require('mysql2/promise');
 
-const config = {
-  db: { /* do not put password or any sensitive info here, done only for demo */
-    host: process.env.DB_CONTAINER,
-    port: process.env.DB_PORT,
-    user: process.env.MYSQL_ROOT_USER,
-    password: process.env.MYSQL_ROOT_PASSWORD,
-    database: process.env.MYSQL_DATABASE,
+// Create the connection pool
+const pool = mysql.createPool({
+    host: 'db', // Use the Docker service name
+    port: 3306,
+    user: 'root',
+    password: 'password',
+    database: 'sd2-db',
     waitForConnections: true,
-    connectionLimit: 2,
+    connectionLimit: 10,
     queueLimit: 0,
-  },
-};
+    multipleStatements: false // Disable multiple statements for security
+});
 
-const pool = mysql.createPool(config.db);
-
-
+// Test the database connection
+async function testConnection() {
+    let connection;
+    try {
+        connection = await pool.getConnection();
+        console.log('Database connection successful');
+        return true;
+    } catch (error) {
+        console.error('Database connection failed:', error);
+        return false;
+    } finally {
+        if (connection) connection.release();
+    }
+}
 
 // Utility function to query the database
-async function query(sql, params) {
-  const [rows, fields] = await pool.execute(sql, params);
-
-  return rows;
+async function query(sql, params = []) {
+    let connection;
+    try {
+        connection = await pool.getConnection();
+        
+        // Log the query for debugging
+        console.log('Executing query:', sql, params);
+        
+        const [rows] = await connection.query(sql, params);
+        
+        // Log the result for debugging
+        console.log('Query result:', rows);
+        
+        return rows;
+    } catch (error) {
+        console.error('Database query error:', error);
+        throw error;
+    } finally {
+        if (connection) connection.release();
+    }
 }
+
+// Test the connection when the module loads
+testConnection();
 
 module.exports = {
-  query,
-}
+    query,
+    testConnection
+};

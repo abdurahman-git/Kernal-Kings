@@ -1,32 +1,23 @@
-doctype html
-html
-  head    
-    title User Profile | RideShare
-    link(rel="stylesheet" href="/styles.css")
-    meta(name="viewport" content="width=device-width, initial-scale=1")
-  body
-    .container
-      h1 👤 User Profile      
+extends layout
 
-      if users && users.length > 0
-        each user in users
-          .profile-card
-            .profile-header
-              img.profile-img(src=user.profile_image ? `/uploads/${user.profile_image}` : '/uploads/default.png', alt="Profile Picture")
-              h2 #{user.firstname.trim()} #{user.lastname.trim()}
-              p.email 📧 
-                a.mail-link(href=`mailto:${user.email}`) #{user.email.trim()}
+block content
+  .container
+    h1 👤 User Profile
 
-            .profile-details
-              p.rating ⭐ Rating: #{user.rating ? '⭐'.repeat(Math.round(user.rating)) : 'No Rating'}
-              p.join-date 📅 Joined: #{user.join_date ? new Date(user.join_date).toLocaleDateString() : 'N/A'}
-              p.total-rides 🚖 Total Rides: #{user.total_rides ? user.total_rides : Math.floor(Math.random() * 100) + 1}
-              p.bio 📝 Bio: #{user.bio ? user.bio : 'No bio available'}
-
-      else
-        p.warning ⚠ No users found.
-
-      a.btn-back(href="/about") ← Back to About Page
-
-    footer
-      p © 2025 RideShare Platform. All rights reserved.
+    if users && users.length > 0
+      each user in users
+        .profile-card
+          .profile-header
+            img.profile-img(src=user.profile_image ? `/uploads/${user.profile_image}` : '/uploads/default.png', alt="Profile Picture")
+            h2 #{user.firstname.trim()} #{user.lastname.trim()}
+            p.email 📧 
+              a.mail-link(href=`mailto:${user.email}`) #{user.email.trim()}
+          .profile-details
+            p.rating ⭐ Rating: #{user.rating ? '⭐'.repeat(Math.round(user.rating)) : 'No Rating'}
+            p.join-date 📅 Joined: #{user.join_date ? new Date(user.join_date).toLocaleDateString() : 'N/A'}
+            p.total-rides 🚖 Total Rides: #{user.total_rides ? user.total_rides : Math.floor(Math.random() * 100) + 1}
+            p.bio 📝 Bio: #{user.bio ? user.bio : 'No bio available'}
+    else
+      p.warning ⚠ No users found.
+  
+  a.btn-back(href="/about") ← Back to About Page

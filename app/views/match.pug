@@ -1,0 +1,18 @@
+extends layout
+
+block content
+  h1 Ride Matching
+
+  if matches
+    h2 Matching #{filter}
+    each user in matches
+      p #{user.firstname} #{user.lastname} - Role: #{user.role} - Rating: #{user.rating}
+  else
+    h2 Drivers
+    each user in drivers
+      p #{user.firstname} #{user.lastname} - Rating: #{user.rating}
+    h2 Riders
+    each user in riders
+      p #{user.firstname} #{user.lastname} - Rating: #{user.rating}
+
+  a.btn-back(href="/about") ← Back to About Page

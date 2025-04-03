@@ -1,0 +1,12 @@
+extends layout
+
+block content
+  if user
+    h1 Welcome, #{user.firstname} #{user.lastname}!
+    p Email: #{user.email}
+    p Rating: #{user.rating} ★
+  else
+    h1 Welcome, Guest!
+  p
+    a(href="/book") Book a Ride | 
+    a(href="/review/new") Add a Review

@@ -1,33 +1,25 @@
-doctype html
-html
-  head
-    title Ride Listings
-    link(rel="stylesheet", href="/styles.css")
-  body
-    .container
-      h1 🚗 Available Ride Listings
+extends layout
 
-      // Check if rides are available
-      if rides && rides.length > 0
-        .ride-listings
-          each ride in rides
-            .ride-card
-              .ride-header
-                h2 📍 From #{ride.pickup_location} → #{ride.dropoff_location}
+block content
+  .container
+    h1 🚗 Available Ride Listings
 
-              .ride-details
-                p 💰 <strong>Cost:</strong> $#{(parseFloat(ride.cost) || 0).toFixed(2)}
-                p ⏳ <strong>Estimated Time:</strong> #{ride.estimated_time || 'N/A'}
-                p 🏷️ <strong>Ride Type:</strong> #{ride.ride_type || 'Standard'}
-
-              .user-info
-                h3 👤 Driver Information
-                p 🏆 <strong>Name:</strong> #{ride.user_firstname} #{ride.user_lastname}
-                p 📧 <strong>Email:</strong> #{ride.user_email}
-                p ⭐ <strong>Rating:</strong> #{'⭐'.repeat(ride.user_rating)}
-
-      else
-        p No ride listings available.
-      a.btn-back(href="/about") ← Back to About Page
-    footer
-      p © 2025 RideShare Platform. All rights reserved.
+    if rides && rides.length > 0
+      .ride-listings
+        each ride in rides
+          .ride-card
+            .ride-header
+              h2 📍 From #{ride.pickup_location} → #{ride.dropoff_location}
+            .ride-details
+              p 💰 <strong>Cost:</strong> $#{(parseFloat(ride.cost) || 0).toFixed(2)}
+              p ⏳ <strong>Estimated Time:</strong> #{ride.estimated_time || 'N/A'}
+              p 🏷️ <strong>Ride Type:</strong> #{ride.ride_type || 'Standard'}
+            .user-info
+              h3 👤 Driver Information
+              p 🏆 <strong>Name:</strong> #{ride.user_firstname} #{ride.user_lastname}
+              p 📧 <strong>Email:</strong> #{ride.user_email}
+              p ⭐ <strong>Rating:</strong> #{'⭐'.repeat(ride.user_rating)}
+    else
+      p No ride listings available.
+  
+  a.btn-back(href="/about") ← Back to About Page

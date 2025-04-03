@@ -1,46 +1,38 @@
-doctype html
-html
-  head
-    title Ride Details
-    link(rel="stylesheet", href="/styles.css")
-  body
-    h1 Ride Details
+extends layout
 
-    // Check if rides are available
-    if rides && rides.length > 0
-      each ride in rides
-        .ride-details
-          h2 Ride Information
-          table
-            thead
-              tr
-                th Pickup Location
-                th Dropoff Location
-                th Cost
-            tbody
-              tr
-                td= ride.pickup_location
-                td= ride.dropoff_location
-                td= '$' + (parseFloat(ride.cost) || 0).toFixed(2) 
-                // Display cost with 2 decimal points
+block content
+  h1 Ride Details
 
-          h3 User Information
-          table
-            thead
-              tr
-                th First Name
-                th Last Name
-                th Email
-                th Rating
-            tbody
-              tr
-                td= ride.user_firstname
-                td= ride.user_lastname
-                td= ride.user_email
-                td= ride.user_rating
-
-    else
-      p No ride details available.
-    a.btn-back(href="/about") ← Back to About Page
-    footer
-      p © 2025 RideShare Platform. All rights reserved.
+  if rides && rides.length > 0
+    each ride in rides
+      .ride-details
+        h2 Ride Information
+        table
+          thead
+            tr
+              th Pickup Location
+              th Dropoff Location
+              th Cost
+          tbody
+            tr
+              td= ride.pickup_location
+              td= ride.dropoff_location
+              td= '$' + (parseFloat(ride.cost) || 0).toFixed(2)
+        h3 Driver Information
+        table
+          thead
+            tr
+              th First Name
+              th Last Name
+              th Email
+              th Rating
+          tbody
+            tr
+              td= ride.user_firstname
+              td= ride.user_lastname
+              td= ride.user_email
+              td= ride.user_rating
+  else
+    p No ride details available.
+  
+  a.btn-back(href="/about") ← Back to About Page

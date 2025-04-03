@@ -1,47 +1,36 @@
-doctype html
-html
-  head    
-    title User List | RideShare
-    link(rel="stylesheet" href="/styles.css")
-    meta(name="viewport" content="width=device-width, initial-scale=1")
-  body
-    .container
-      h1 👤 User Directory      
+extends layout
 
-      if users && users.length > 0
-        table.user-table
-          thead
+block content
+  .container
+    h1 👤 User Directory
+
+    if users && users.length > 0
+      table.user-table
+        thead
+          tr
+            th #
+            th Profile Picture
+            th Full Name
+            th Email
+            th Ratings
+            th Join Date
+            th Total Rides
+            th Actions
+        tbody
+          each user, index in users
             tr
-              th # 
-              th Profile Picture
-              th Full Name
-              th Email
-              th Ratings
-              th Join Date
-              th Total Rides
-              th Actions
-          tbody
-            each user, index in users
-              tr
-                td= index + 1
-                td 
-                  img.profile-img(src=user.profile_image ? `/uploads/${user.profile_image}` : 
-                    user.firstname.trim() === "Usain" && user.lastname.trim() === "Bolt" ? './images/usain.png' : 
-                    user.firstname.trim() === "Saka" ? './images/saka.png' : '/uploads/default.png', alt="Profile Picture")
-                td #{user.firstname.trim()} #{user.lastname.trim()}
-                td 
-                  a.mail-link(href=`mailto:${user.email}`) 📧 #{user.email.trim()}
-                td= user.rating ? '⭐'.repeat(Math.round(user.rating)) : 'No Rating'
-                td= user.join_date ? new Date(user.join_date).toLocaleDateString() : 'N/A'
-                td= user.total_rides ? user.total_rides : Math.floor(Math.random() * 100) + 1
-                td
-                  a.btn.btn-profile(href=`/userprofile/${user.user_id}`) 👀 View Profile
-
-      else
-        p.warning ⚠ No users found.
-
-      a.btn-back(href="/about") ← Back to About Page
-
-
-    footer
-      p © 2025 RideShare Platform. All rights reserved.
+              td= index + 1
+              td 
+                img.profile-img(src=user.profile_image ? `/uploads/${user.profile_image}` : 'static/default.png', alt="Profile Picture")
+              td #{user.firstname.trim()} #{user.lastname.trim()}
+              td 
+                a.mail-link(href=`mailto:${user.email}`) 📧 #{user.email.trim()}
+              td= user.rating ? '⭐'.repeat(Math.round(user.rating)) : 'No Rating'
+              td= user.join_date ? new Date(user.join_date).toLocaleDateString() : 'N/A'
+              td= user.total_rides ? user.total_rides : Math.floor(Math.random() * 100) + 1
+              td
+                a.btn.btn-profile(href=`/userprofile/${user.user_id}`) 👀 View Profile
+    else
+      p.warning ⚠ No users found.
+  
+  a.btn-back(href="/about") ← Back to About Page

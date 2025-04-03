@@ -1,0 +1,13 @@
+extends layout
+
+block content
+  h1 Add a Review
+  if error
+    p.error #{error}
+  form(action="/review/new" method="POST")
+    .form-group
+      label(for="review") Your Review:
+      textarea#review.form-control(name="review", placeholder="Type your review here", required)
+    button.btn.btn-primary(type="submit") Submit Review
+  p
+    a(href="/reviews") Back to Reviews
