@@ -7,7 +7,7 @@ block content
     if error
       .error-message= error
     
-    form(action="/book" method="POST")
+    form(action="/book" method="POST")  <!-- Form action updated to POST /book -->
       .form-group
         label(for="pickup") Pickup Location
         input#pickup(
@@ -27,7 +27,7 @@ block content
           placeholder="Enter your destination"
           class="form-control"
         )
-      
+
       button.btn.btn-primary(type="submit") Book Your Ride
 
   style.

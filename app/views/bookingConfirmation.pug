@@ -3,7 +3,7 @@ extends layout
 block content
   .card
     h1.text-center Booking Confirmed!
-    
+
     .booking-details
       .detail-group
         h3 Ride Details
@@ -15,74 +15,17 @@ block content
           span.value= ride.dropoff_location
         .detail-item
           span.label Cost:
-          span.value $#{ride.cost.toFixed(2)}
-      
+          // Ensure ride.cost is a valid number before using toFixed
+          span.value= '$' + (ride.cost ? ride.cost.toFixed(2) : '0.00')
+
       .detail-group
         h3 Driver Information
         .detail-item
           span.label Driver Name:
-          span.value #{ride.driver.firstname} #{ride.driver.lastname}
+          span.value= driver.firstname + ' ' + driver.lastname
         .detail-item
           span.label Driver Rating:
-          span.value #{ride.driver.rating} ★
+          span.value= driver.rating + ' ★'
 
-      .actions
-        a.btn.btn-primary(href="/dashboard") Return to Dashboard
-
-  style.
-    .text-center {
-      text-align: center;
-      color: var(--text-color);
-      margin-bottom: 2rem;
-      font-size: 2.5em;
-    }
-
-    .booking-details {
-      max-width: 600px;
-      margin: 0 auto;
-    }
-
-    .detail-group {
-      margin-bottom: 2rem;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid #e0e0e0;
-    }
-
-    .detail-group:last-child {
-      border-bottom: none;
-    }
-
-    .detail-group h3 {
-      color: var(--text-color);
-      margin-bottom: 1rem;
-      font-size: 1.5em;
-    }
-
-    .detail-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-      padding: 0.5rem;
-      background: rgba(33, 150, 243, 0.05);
-      border-radius: 4px;
-    }
-
-    .label {
-      font-weight: 500;
-      color: var(--text-color);
-    }
-
-    .value {
-      color: var(--primary-color);
-      font-weight: 500;
-    }
-
-    .actions {
-      text-align: center;
-      margin-top: 2rem;
-    }
-
-    .actions .btn {
-      min-width: 200px;
-    }
+    .actions
+      a.btn.btn-primary(href="/dashboard") Return to Dashboard
