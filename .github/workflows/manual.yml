@@ -1,25 +1,31 @@
 name: CI/CD Pipeline
 
+# Trigger the workflow on push to the main branch or manually
 on:
   push:
     branches:
       - main
+  workflow_dispatch:  # Allows manual trigger of the workflow
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14'
-      
-      - name: Install dependencies
-        run: npm install
-      
-      - name: Run tests
-        run: npm test
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'  # Specify the Node.js version you're using
+
+    - name: Install dependencies
+      run: npm install  # Install your project's dependencies
+
+    - name: Run tests
+      run: npm test  # Run tests with the test script defined in package.json
+
+    - name: Build your project (optional)
+      run: npm run build  # Optional, only if you have a build step (like for production)
+
