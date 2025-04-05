@@ -1,32 +1,33 @@
-name: CI/CD Pipeline with Docker Compose
+name: Manual workflow for docker build
 
+# Controls when the action will run. Workflow runs when manually triggered using the UI
 on:
-  push:
-    branches:
-      - main  # Trigger the workflow on push to the main branch
-  pull_request:
-    branches:
-      - main  # Trigger on pull requests targeting the main branch
+  workflow_dispatch:  # Allows the workflow to be triggered manually
 
 jobs:
   build:
     runs-on: ubuntu-latest  # Runs on the latest Ubuntu environment
 
     steps:
+      # Step 1: Check the repository code
       - name: Checkout code
-        uses: actions/checkout@v2  # Checks out your repository
+        uses: actions/checkout@v2  # Checks out the repository code
 
+      # Step 2: Set up Docker
       - name: Set up Docker
-        uses: docker/setup-buildx-action@v2  # Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2  # Set up Docker Buildx (used for building Docker images)
 
+      # Step 3: Build Docker Image
       - name: Build and run Docker Compose
         run: |
-          docker-compose -f .github/workflows/docker-compose.yml up --build -d  # Build and run Docker Compose
-          docker ps  # List running containers for verification
+          docker-compose -f docker-compose.yml up --build -d  # Build and run containers
+          docker ps  # List the running containers for verification
 
-      - name: Deploy to Heroku (or any other deployment platform)
-        run: |
-          heroku container:login
-          heroku container:push web --app your-heroku-app-name
-          heroku container:release web --app your-heroku-app-name
+      # Step 4: Install dependencies and Node.js
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'  # Ensure that Node.js version 14 is used
 
+      - name: Install dependencies
+        run: npm install  # Install the necessary dependencies using npm
