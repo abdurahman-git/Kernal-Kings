@@ -3,27 +3,27 @@ name: CI for Kernal Kings
 on:
   push:
     branches:
-      - main  # Trigger this on push to the main branch
+      - main  # Trigger CI on push to the main branch
   pull_request:
     branches:
-      - main  # Trigger on pull requests targeting the main branch
-  workflow_dispatch:  # Allows manual triggers
+      - main  # Trigger CI on pull requests to the main branch
+  workflow_dispatch:  # Allows manual triggering via GitHub UI
 
 jobs:
-  build:
-    runs-on: ubuntu-latest  # Using the latest Ubuntu runner
+  test:
+    runs-on: ubuntu-latest  # Runs on the latest Ubuntu environment
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2  # Checks out the code
+        uses: actions/checkout@v2  # Checks out the repository code
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14'  # You can change this version based on what you use
+          node-version: '14'  # Specify the Node.js version you're using
 
       - name: Install dependencies
-        run: npm install  # This installs all dependencies from package.json
+        run: npm install  # Install dependencies from package.json
 
       - name: Run tests
-        run: npm test  # Ensure you have tests in place for `npm test` to work
+        run: npm test  # Run your test script (ensure you have tests set up)
