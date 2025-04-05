@@ -1,0 +1,36 @@
+name: Deploy to Heroku
+
+on:
+  push:
+    branches:
+      - main  # Trigger CD on push to the main branch
+  workflow_dispatch:  # Allows manual triggering via GitHub UI
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest  # Runs on Ubuntu environment
+    needs: test  # Ensure the CI job (test) has passed before deploying
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v2  # Sets up Docker for building
+
+      - name: Build Docker image
+        run: docker build -t kernal-kings-app .  # Build the Docker image
+
+      - name: Log in to Heroku
+        run: |
+          echo "$HEROKU_API_KEY" | docker login --username=_ --password-stdin registry.heroku.com
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}  # Store Heroku API key securely in GitHub Secrets
+
+      - name: Push Docker image to Heroku
+        run: |
+          docker tag kernal-kings-app registry.heroku.com/kernal-kings-app/web
+          docker push registry.heroku.com/kernal-kings-app/web
+
+      - name: Release the app on Heroku
+        run: heroku container:release web --app kernal-kings-app
