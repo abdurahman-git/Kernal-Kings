@@ -30,36 +30,31 @@ jobs:
       # Step 4: Set up Docker and Docker Compose
       - name: Set up Docker
         run: |
-          # Install Docker dependencies
           sudo apt-get update
           sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
-
-          # Add Docker’s official GPG key and repository
           curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
           sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-          
-          # Install Docker Engine and Containerd
           sudo apt-get update
           sudo apt-get install -y docker-ce docker-ce-cli containerd.io
-          
-          # Install Docker Compose
           sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
           sudo chmod +x /usr/local/bin/docker-compose
-
-          # Verify Docker and Docker Compose installation
           docker --version
           docker-compose --version
 
-      # Step 5: Build Docker container using docker-compose
+      # Step 5: Create .env file from GitHub Secrets
+      - name: Create .env file
+        run: echo "${{ secrets.ENV_FILE }}" > .env
+
+      # Step 6: Build Docker container using docker-compose
       - name: Build Docker Container
         run: |
           docker-compose -f docker-compose.yml up -d  # Start services defined in docker-compose.yml
 
-      # Step 6: Install xvfb for headless testing
+      # Step 7: Install xvfb for headless testing
       - name: Install xvfb for headless testing
         run: sudo apt-get install -y xvfb
 
-      # Step 7: Run Nightwatch Tests with xvfb (headless environment)
+      # Step 8: Run Nightwatch Tests with xvfb (headless environment)
       - name: Run Nightwatch Tests
         run: |
           xvfb-run --auto-servernum npm test  # Run the Nightwatch tests
