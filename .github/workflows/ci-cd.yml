@@ -3,31 +3,41 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - main # Trigger on push to main branch
+      - main # Trigger on push to the main branch
   pull_request:
     branches:
-      - main
+      - main # Trigger on pull request to the main branch
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Checkout the repository
       - name: Checkout Repository
         uses: actions/checkout@v2
 
+      # Step 2: Set up Node.js environment
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: '14'  # Use Node.js version 14
 
+      # Step 3: Install dependencies
       - name: Install Dependencies
         run: npm install
 
-      - name: Run Tests
-        run: npm test
-
+      # Step 4: Build Docker container using docker-compose
       - name: Build Docker Container
         run: |
-          docker build -t my-app .
-          docker run -d -p 3000:3000 my-app
+          docker-compose -f docker-compose.yml up -d  # Start services defined in docker-compose.yml
+
+      # Step 5: Install necessary dependencies for Nightwatch tests
+      - name: Install xvfb for headless testing
+        run: sudo apt-get install -y xvfb
+
+      # Step 6: Run Nightwatch Tests with xvfb (headless environment)
+      - name: Run Nightwatch Tests
+        run: |
+          xvfb-run --auto-servernum npm test  # Run the Nightwatch tests
+
