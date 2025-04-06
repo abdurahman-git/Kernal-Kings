@@ -3,10 +3,10 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - main # Trigger on push to the main branch
+      - main  # Trigger on push to the main branch
   pull_request:
     branches:
-      - main # Trigger on pull request to the main branch
+      - main  # Trigger on pull request to the main branch
 
 jobs:
   build:
@@ -30,10 +30,23 @@ jobs:
       # Step 4: Set up Docker and Docker Compose
       - name: Set up Docker
         run: |
+          # Install Docker dependencies
           sudo apt-get update
-          sudo apt-get install -y docker.io
+          sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+
+          # Add Docker’s official GPG key and repository
+          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+          sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+          
+          # Install Docker Engine and Containerd
+          sudo apt-get update
+          sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+          
+          # Install Docker Compose
           sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
           sudo chmod +x /usr/local/bin/docker-compose
+
+          # Verify Docker and Docker Compose installation
           docker --version
           docker-compose --version
 
