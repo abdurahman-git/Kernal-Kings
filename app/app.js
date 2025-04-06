@@ -35,7 +35,6 @@ app.get('/about-us', (req, res) => {
 
 // Root Route
 app.get("/", function(req, res) {
-  console.log(req.session);
   if (req.session.uid) {
     res.send('Welcome back, ' + req.session.uid + '!');
   } else {
@@ -54,21 +53,9 @@ app.get("/userprofile", async function(req, res) {
   try {
     const sql = "SELECT * FROM user"; // Query to fetch users from the database
     const users = await db.query(sql); // Wait for the query to return results
-    console.log('Fetched users:', users); // Debugging to see the fetched data
-
-    // Check if users array is empty or not
-    if (users.length === 0) {
-      console.log('No users found in the database');
-      res.status(404).send('No users found');
-      return;
-    }
-
-    // Render the user profile page with users data
     res.render("userprofile", { users: users });
   } catch (error) {
-    // Log the error for debugging
     console.error('Error fetching users:', error.message);
-    console.error(error.stack);
     res.status(500).send("Database error.");
   }
 });
@@ -77,16 +64,13 @@ app.get("/userprofile", async function(req, res) {
 app.get('/dashboard', async function(req, res) {
   if (req.session.loggedIn) {
     try {
-      // Query to get the logged-in user's data from the database
       const sql = "SELECT * FROM user WHERE user_id = ?";
       const user = await db.query(sql, [req.session.uid]);
 
       if (user.length === 0) {
-        // If no user found, redirect to login
         return res.redirect('/login');
       }
 
-      // Render the dashboard and pass the user data
       res.render('dashboard', { user: user[0] });
     } catch (error) {
       console.error("Error fetching user data:", error.message);
@@ -100,19 +84,9 @@ app.get('/dashboard', async function(req, res) {
 // Book a Ride Route
 app.get('/book', function(req, res) {
   if (req.session.loggedIn) {
-    res.render('book'); // Render the existing 'book.pug' page
+    res.render('book');
   } else {
-    res.redirect('/login'); // Redirect to login if not logged in
-  }
-});
-
-// Booking Confirmation Route
-app.get('/bookingConfirmation', function(req, res) {
-  if (req.session.loggedIn) {
-    // Render the booking confirmation page
-    res.render('bookingConfirmation');
-  } else {
-    res.redirect('/login'); // Redirect to login if not logged in
+    res.redirect('/login');
   }
 });
 
@@ -120,17 +94,23 @@ app.get('/bookingConfirmation', function(req, res) {
 app.post('/book', async function(req, res) {
   const { pickup, dropoff } = req.body;
 
+  // Check if pickup and dropoff locations are provided
+  if (!pickup || !dropoff) {
+    return res.render('book', { error: "Pickup and Dropoff locations are required." });
+  }
+
+  const cost = 10; // Default cost or calculate based on parameters (you can adjust this logic)
+
   const sql = `
-    INSERT INTO rides (user_id, pickup_location, dropoff_location, cost, comments, driver_id)
-    VALUES (?, ?, ?, ?, ?, ?)
+    INSERT INTO rides (user_id, pickup_location, dropoff_location, cost, status)
+    VALUES (?, ?, ?, ?, ?)
   `;
 
   try {
-    console.log("Form Data: ", req.body);  // Log form data to check what is being submitted
     // Insert the ride into the database
-    await db.query(sql, [req.session.uid, pickup, dropoff, 10, '', null]); // Assuming cost is 10, and comments are empty for now
+    await db.query(sql, [req.session.uid, pickup, dropoff, cost, 'pending']);
 
-    // Now, fetch the newly created ride's details
+    // Fetch the newly created ride details
     const rideSql = `
       SELECT * FROM rides WHERE user_id = ? AND pickup_location = ? AND dropoff_location = ?
     `;
@@ -138,15 +118,19 @@ app.post('/book', async function(req, res) {
     const ride = await db.query(rideSql, [req.session.uid, pickup, dropoff]);
 
     if (ride.length > 0) {
+      // Store the ride ID in the session
+      req.session.rideId = ride[0].ride_id;
+
+      // Fetch driver details (using dummy driver ID 1 for now)
       const driverSql = `
         SELECT * FROM user WHERE user_id = ?
       `;
-      const driver = await db.query(driverSql, [1]); // Using dummy driver ID for now
+      const driver = await db.query(driverSql, [1]);
 
-      // After successful booking, render the booking confirmation page
+      // Render booking confirmation page
       res.render('bookingConfirmation', {
-        ride: ride[0],   // Pass the ride details
-        driver: driver[0] // Pass the driver details
+        ride: ride[0],  // Pass the ride details (including cost)
+        driver: driver[0]  // Pass the driver details
       });
     } else {
       res.status(500).send("Error fetching ride details.");
@@ -154,57 +138,104 @@ app.post('/book', async function(req, res) {
 
   } catch (error) {
     console.error("Error submitting booking:", error.message);
-    console.error(error.stack);  // Log the full error stack
     res.status(500).send("Error submitting booking.");
+  }
+});
+
+// New Review Form Route (GET)
+app.get('/reviewNew', function(req, res) {
+  if (req.session.loggedIn) {
+    res.render('reviewNew');
+  } else {
+    res.redirect('/login');
+  }
+});
+
+// Submit Review Route (POST)
+app.post('/review/new', async function(req, res) {
+  const { review, rating, ride_id } = req.body;
+
+  if (!review || review.trim() === "") {
+    return res.render('reviewNew', { error: 'Review cannot be empty.' });
+  }
+
+  if (rating < 1 || rating > 5) {
+    return res.render('reviewNew', { error: 'Rating must be between 1 and 5.' });
+  }
+
+  // Check if ride_id is valid
+  if (!ride_id || isNaN(ride_id)) {
+    return res.render('reviewNew', { error: 'Ride ID is required.' });
+  }
+
+  const sql = `
+    INSERT INTO reviews (ride_id, user_id, rating, COMMENT)
+    VALUES (?, ?, ?, ?)
+  `;
+
+  try {
+    await db.query(sql, [ride_id, req.session.uid, rating, review]);
+
+    // Redirect to reviews page after successful submission
+    res.redirect('/reviews');
+  } catch (error) {
+    console.error("Error submitting review:", error.message);
+    res.status(500).send("Error submitting review.");
+  }
+});
+
+// Reviews Route (GET)
+app.get('/reviews', async function(req, res) {
+  if (req.session.loggedIn) {
+    try {
+      const sql = "SELECT * FROM reviews"; 
+      const reviews = await db.query(sql);
+      res.render('reviews', { reviews: reviews });
+    } catch (error) {
+      console.error("Error fetching reviews:", error.message);
+      res.status(500).send("Error fetching reviews.");
+    }
+  } else {
+    res.redirect('/login');  // Redirect to login if not logged in
   }
 });
 
 // Login Route (GET)
 app.get('/login', function (req, res) {
   if (req.session.loggedIn) {
-    return res.redirect('/dashboard'); // If already logged in, redirect to dashboard
+    return res.redirect('/dashboard');
   }
-  res.render('login'); // Render the login page if not logged in
+  res.render('login');
 });
 
 // Authenticate Route (POST)
 app.post('/authenticate', async function (req, res) {
   try {
-    const params = req.body;
-    const email = params.email;
-    const password = params.password;
+    const { email, password } = req.body;
 
-    // Fetch the user by email from the database
     const sql = "SELECT * FROM user WHERE email = ?";
     const users = await db.query(sql, [email]);
 
     if (users.length === 0) {
-      console.log('Invalid email:', email);
       return res.status(401).send('Invalid email');
     }
 
     const user = users[0];
-
-    // Compare the entered password with the hashed password stored in the database
     const match = await bcrypt.compare(password, user.password);
 
     if (match) {
-      // Set session on successful login
       req.session.uid = user.user_id;
       req.session.loggedIn = true;
-      req.session.firstName = user.firstname;  // Store first name
-      req.session.lastName = user.lastname;    // Store last name
-      req.session.email = user.email;          // Store email
-      req.session.rating = user.rating;        // Store rating
-      console.log('Session established for user ID:', user.user_id);
-      res.redirect('/dashboard'); // Redirect to dashboard on success
+      req.session.firstName = user.firstname;
+      req.session.lastName = user.lastname;
+      req.session.email = user.email;
+      req.session.rating = user.rating;
+      res.redirect('/dashboard');
     } else {
-      console.log('Invalid password for user:', email);
       res.status(401).send('Invalid password');
     }
   } catch (err) {
     console.error('Error during authentication:', err.message);
-    console.error(err.stack);  // Log the full error stack for more insight
     res.status(500).send('Internal server error');
   }
 });
@@ -219,23 +250,15 @@ app.get('/logout', function (req, res) {
 app.get('/userlist', async function(req, res) {
   if (req.session.loggedIn) {
     try {
-      // Query to fetch all users from the database
       const sql = "SELECT * FROM user"; 
       const users = await db.query(sql);
-
-      if (users.length > 0) {
-        // Render the user list page with the users data
-        res.render('userlist', { users: users });
-      } else {
-        // If no users found, send a message
-        res.render('userlist', { users: [], message: 'No users found' });
-      }
+      res.render('userlist', { users: users });
     } catch (error) {
       console.error("Error fetching users:", error.message);
       res.status(500).send("Error fetching users.");
     }
   } else {
-    res.redirect('/login'); // Redirect to login if not logged in
+    res.redirect('/login');
   }
 });
 

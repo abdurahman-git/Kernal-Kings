@@ -3,11 +3,12 @@ extends layout
 block content
   .card
     h1.text-center Book a Ride
-    
+
+    // Display error message if exists
     if error
       .error-message= error
-    
-    form(action="/book" method="POST")  <!-- Form action updated to POST /book -->
+
+    form(action="/book" method="POST")
       .form-group
         label(for="pickup") Pickup Location
         input#pickup(

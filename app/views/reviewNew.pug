@@ -1,13 +1,26 @@
 extends layout
 
 block content
-  h1 Add a Review
-  if error
-    p.error #{error}
-  form(action="/review/new" method="POST")
-    .form-group
-      label(for="review") Your Review:
-      textarea#review.form-control(name="review", placeholder="Type your review here", required)
-    button.btn.btn-primary(type="submit") Submit Review
-  p
-    a(href="/reviews") Back to Reviews
+  .container
+    h1 Add a Review
+
+    if error
+      p.error #{error}
+
+    form(action='/review/new' method='POST')
+      .form-group
+        label(for='ride_id') Ride ID:
+        input#ride_id.form-control(type='number', name='ride_id', placeholder='Enter the ride ID', required)
+
+      .form-group
+        label(for='rating') Rating (e.g., 4.5):
+        input#rating.form-control(type='number', name='rating', step='0.1', min='1', max='5', placeholder='Rate from 1 to 5', required)
+
+      .form-group
+        label(for='comment') Comment:
+        textarea#comment.form-control(name='review', placeholder='Type your review here', required)
+
+      button.btn.btn-primary(type='submit') Submit Review
+
+    p
+      a(href='/reviews') Back to Reviews
