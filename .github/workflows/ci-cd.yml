@@ -23,21 +23,30 @@ jobs:
         with:
           node-version: '14'  # Use Node.js version 14
 
-      # Step 3: Install dependencies
+      # Step 3: Install Dependencies
       - name: Install Dependencies
         run: npm install
 
-      # Step 4: Build Docker container using docker-compose
+      # Step 4: Set up Docker and Docker Compose
+      - name: Set up Docker
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker.io
+          sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          docker --version
+          docker-compose --version
+
+      # Step 5: Build Docker container using docker-compose
       - name: Build Docker Container
         run: |
           docker-compose -f docker-compose.yml up -d  # Start services defined in docker-compose.yml
 
-      # Step 5: Install necessary dependencies for Nightwatch tests
+      # Step 6: Install xvfb for headless testing
       - name: Install xvfb for headless testing
         run: sudo apt-get install -y xvfb
 
-      # Step 6: Run Nightwatch Tests with xvfb (headless environment)
+      # Step 7: Run Nightwatch Tests with xvfb (headless environment)
       - name: Run Nightwatch Tests
         run: |
           xvfb-run --auto-servernum npm test  # Run the Nightwatch tests
-
