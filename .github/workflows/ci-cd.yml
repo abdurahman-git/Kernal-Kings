@@ -54,11 +54,17 @@ jobs:
       - name: Install xvfb for headless testing
         run: sudo apt-get install -y xvfb
 
-      # Step 8: Install Chrome driver for Nightwatch
+      # Step 8: Install Chrome and ChromeDriver for Nightwatch
       - name: Install Chrome and ChromeDriver for Nightwatch
         run: |
-          sudo apt-get install -y google-chrome-stable
-          sudo apt-get install -y chromedriver
+          # Install Google Chrome
+          sudo apt-get install -y wget
+          wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+          sudo dpkg -i google-chrome-stable_current_amd64.deb
+          sudo apt-get install -f  # Fix any missing dependencies
+
+          # Install ChromeDriver
+          sudo npm install -g chromedriver
 
       # Step 9: Run Nightwatch Tests with xvfb (headless environment)
       - name: Run Nightwatch Tests
