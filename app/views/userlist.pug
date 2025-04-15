@@ -15,7 +15,7 @@ block content
             th Ratings
             th Join Date
             th Total Rides
-            th Actions
+
         tbody
           each user, index in users
             tr
@@ -28,8 +28,7 @@ block content
               td= user.rating ? '⭐'.repeat(Math.round(user.rating)) : 'No Rating'
               td= user.join_date ? new Date(user.join_date).toLocaleDateString() : 'N/A'
               td= user.total_rides ? user.total_rides : Math.floor(Math.random() * 100) + 1
-              td
-                a.btn.btn-profile(href=`/userprofile/${user.user_id}`) 👀 View Profile
+          
     else
       p.warning ⚠ No users found.
   

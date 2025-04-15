@@ -16,7 +16,7 @@ block content
         .detail-item
           span.label Cost:
           // Ensure ride.cost is a valid number before using toFixed
-          span.value= '$' + (typeof ride.cost === 'number' && !isNaN(ride.cost) ? ride.cost.toFixed(2) : '0.00')
+          span.value= '£1' + (typeof ride.cost === 'number' && !isNaN(ride.cost) ? ride.cost.toFixed(2) : '0.00')
 
     .detail-group
       h3 Driver Information
