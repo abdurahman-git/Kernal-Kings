@@ -1,0 +1,72 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main  # Trigger on push to the main branch
+  pull_request:
+    branches:
+      - main  # Trigger on pull request to the main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      # Step 2: Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'  # Use Node.js version 14
+
+      # Step 3: Install Dependencies
+      - name: Install Dependencies
+        run: npm install
+
+      # Step 4: Set up Docker and Docker Compose
+      - name: Set up Docker
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+          sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+          sudo apt-get update
+          sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+          sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          docker --version
+          docker-compose --version
+
+      # Step 5: Create .env file from GitHub Secrets
+      - name: Create .env file
+        run: echo "${{ secrets.ENV_FILE }}" > .env
+
+      # Step 6: Build Docker container using docker-compose
+      - name: Build Docker Container
+        run: |
+          docker-compose -f docker-compose.yml up -d  # Start services defined in docker-compose.yml
+
+      # Step 7: Install xvfb for headless testing
+      - name: Install xvfb for headless testing
+        run: sudo apt-get install -y xvfb
+
+      # Step 8: Install Chrome and ChromeDriver for Nightwatch
+      - name: Install Chrome and ChromeDriver for Nightwatch
+        run: |
+          # Install Google Chrome
+          sudo apt-get install -y wget
+          wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+          sudo dpkg -i google-chrome-stable_current_amd64.deb
+          sudo apt-get install -f  # Fix any missing dependencies
+
+          # Install ChromeDriver
+          sudo npm install -g chromedriver
+
+      # Step 9: Run Nightwatch Tests with xvfb (headless environment)
+      - name: Run Nightwatch Tests
+        run: |
+          xvfb-run --auto-servernum npm test  # Run the Nightwatch tests
